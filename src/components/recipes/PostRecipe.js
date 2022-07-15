@@ -1,11 +1,9 @@
-import React from "react";
-import { db } from "./firebase.config";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { MainContext } from "../../context/MainContext";
+import axios from "axios";
 
-
-
-
-const App = () => {
+export default function Recipe() {
+    const [recipe, setRecipe] = useContext(MainContext)
     const [recipes, setRecipes] = useState([]);
     const [form, setForm] = useState({
         title: "",
@@ -13,9 +11,62 @@ const App = () => {
         ingredients: [],
         steps: [],
         image: "",
-        alt: "",
     });
+
+    const URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000/postrecipe"
+
     const [popupActive, setPopupActive] = useState(false);
+
+
+    // useEffect(()=>{
+    //     const getRecipe = async () => {
+    //         try{
+    //             const resp = await axios.get("/recipe" , {
+    //                 withCredentials: true
+    //             })
+    //             setRecipe(resp.data)
+    //         }catch(err){
+    //             console.log(err)
+    //         }
+            
+    //     }
+    //     getRecipe()
+    // },[])
+
+
+    const handleStepCount = () => {
+        setForm({
+            ...form,
+            steps: [...form.steps, ""],
+        });
+    };
+
+    const handleIngredientCount = () => {
+        setForm({
+            ...form,
+            ingredients: [...form.ingredients, ""],
+        });
+    };
+
+
+    const handleStep = (e, i) => {
+        const stepsClone = [...form.steps];
+        stepsClone[i] = e.target.value;
+        setForm({
+            ...form,
+            steps: stepsClone,
+        });
+    };
+
+    const handleIngredient = (e, i) => {
+        const ingredientClone = [...form.ingredients];
+        ingredientClone[i] = e.target.value;
+        setForm({
+        ...form,
+        ingredients: ingredientClone,
+        });
+        };
+        
 
 
     const handleView = (id) => {
@@ -30,58 +81,83 @@ const App = () => {
         setRecipes(recipesClone);
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+
+        
+
+    
+
+
+
+    const recipeHandle = async (e) => {
+        e.preventDefault()
+
         if (!form.title || !form.desc || !form.ingredients || !form.steps) {
             alert("Please fill out all fields");
             return;
-        }
-      
+            }
+        console.log(form)
 
+        
+    try {
+        const axiosResp = await axios.post(URL, form, {
+          withCredentials: true,
+        });
+        console.log("axiosResp.data:", form);
+        if (!axiosResp) {
+          console.debug("axiosResp.data:", axiosResp);
+        } else {
+          console.debug("axiosResp.data:", axiosResp);
+        }
+      } catch (error) {
+        console.log("Error while sending with axios", error);
+      }
+
+
+        
+ 
+        
+        // const fetchData = async () => {
+        //     try{
+        //         await axios({
+        //             method: 'post',
+        //             url: URL,
+        //             data: {
+        //                 title: form.title,
+        //                 decs: form.desc,
+        //                 ingredient: form.ingredients,
+        //                 steps: form.steps
+        //             },
+        //         })
+        //     }catch(err){
+        //         console.log(err)
+        //     }
+        // }
+
+        // fetchData()
+
+
+                    
         setForm({
             title: "",
             desc: "",
             ingredients: [],
             steps: [],
             image: "",
-        });
-    };
+            });
+    }
 
-    const handleIngredient = (e, i) => {
-        const ingredientClone = [...form.ingredients];
-        ingredientClone[i] = e.target.value;
-        setForm({
-            ...form,
-            ingredients: ingredientClone,
-        });
-    };
 
-    const handleStep = (e, i) => {
-        const stepsClone = [...form.steps];
-        stepsClone[i] = e.target.value;
-        setForm({
-            ...form,
-            steps: stepsClone,
-        });
-    };
 
-    const handleIngredientCount = () => {
-        setForm({
-            ...form,
-            ingredients: [...form.ingredients, ""],
-        });
-    };
 
-    const handleStepCount = () => {
-        setForm({
-            ...form,
-            steps: [...form.steps, ""],
-        });
-    };
 
-  
+
+
+
+
+
     return (
-        <div className="App">
+
+        <>
             <h1>My recipes</h1>
             <button onClick={() => setPopupActive(!popupActive)}>Add recipe</button>
 
@@ -89,10 +165,9 @@ const App = () => {
                 {recipes.map((recipe) => (
                     <div className="recipe" key={recipe.id}>
                         <h3>{recipe.title}</h3>
-                        <p dangerouslySetInnerHTML={{ __html: recipe.desc }}></p>
                         {recipe.viewing && (
                             <div>
-                                <img className="img" src={recipe.image} alt={recipe.desc} />
+                                {/* <img className="img" src={recipe.image} alt={recipe.desc} /> */}
                                 <h4>Ingredients</h4>
                                 <ul>
                                     {recipe.ingredients.map((ingredient, i) => (
@@ -112,7 +187,7 @@ const App = () => {
                                 View {recipe.viewing ? "less" : "more"}
                             </button>
                             <button
-                                onClick={() => {}}
+                                onClick={() => { }}
                                 className="remove"
                             >
                                 Remove
@@ -125,7 +200,7 @@ const App = () => {
                 <div className="popup">
                     <div className="popup-inner">
                         <h2>Add a new recipe</h2>
-                        <form onSubmit={handleSubmit} >
+                        <form onSubmit={recipeHandle} >
                             <div className="form-group">
                                 <label>Title</label>
                                 <input
@@ -135,14 +210,14 @@ const App = () => {
                                 />
                             </div>
 
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label>Image URL</label>
                                 <input
                                     type="text"
                                     value={form.image}
                                     onChange={(e) => setForm({ ...form, image: e.target.value })}
                                 />
-                            </div>
+                            </div> */}
                             <div className="form-group">
                                 <label>Description</label>
                                 <textarea
@@ -182,7 +257,7 @@ const App = () => {
                                 </button>
                             </div>
                             <div className="buttons">
-                                <button onSubmit={() => handleSubmit()} type="submit">
+                                <button onSubmit={() => recipeHandle()} type="submit">
                                     Submit
                                 </button>
                                 <button
@@ -197,8 +272,6 @@ const App = () => {
                     </div>
                 </div>
             )}
-        </div>
-    );
-};
-
-export default App;
+        </>
+    )
+}
