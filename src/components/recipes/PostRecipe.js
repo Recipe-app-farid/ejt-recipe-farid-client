@@ -167,7 +167,7 @@ export default function Recipe() {
                         <h3>{recipe.title}</h3>
                         {recipe.viewing && (
                             <div>
-                                {/* <img className="img" src={recipe.image} alt={recipe.desc} /> */}
+                                <img className="img" src={recipe.image} alt={recipe.desc} />
                                 <h4>Ingredients</h4>
                                 <ul>
                                     {recipe.ingredients.map((ingredient, i) => (
@@ -210,14 +210,14 @@ export default function Recipe() {
                                 />
                             </div>
 
-                            {/* <div className="form-group">
+                           <div className="form-group">
                                 <label>Image URL</label>
                                 <input
                                     type="text"
                                     value={form.image}
                                     onChange={(e) => setForm({ ...form, image: e.target.value })}
                                 />
-                            </div> */}
+                            </div>
                             <div className="form-group">
                                 <label>Description</label>
                                 <textarea
