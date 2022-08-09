@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { MainContext } from "../../context/MainContext";
 import axios from "axios";
+import {v4 as uuidv4} from "uuid"
 
 export default function Recipe() {
-    const [recipe, setRecipe] = useContext(MainContext)
+    const [recipeData, setRecipeData] = useContext(MainContext)
     const [recipes, setRecipes] = useState([]);
     const [form, setForm] = useState({
         title: "",
@@ -11,28 +12,35 @@ export default function Recipe() {
         ingredients: [],
         steps: [],
         image: "",
+        _id: uuidv4(),
     });
 
-    const URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000/postrecipe"
-
+    // const URL = import.meta.env.VITE_BACKEND_URL || "mongodb://localhost/ejt-recipe-app"
+    const URL = "http://localhost:4000/postrecipe"
     const [popupActive, setPopupActive] = useState(false);
 
 
-    // useEffect(()=>{
-    //     const getRecipe = async () => {
-    //         try{
-    //             const resp = await axios.get("/recipe" , {
-    //                 withCredentials: true
-    //             })
-    //             setRecipe(resp.data)
-    //         }catch(err){
-    //             console.log(err)
-    //         }
+    useEffect(()=>{
+        const getRecipe = async () => {
+            try{
+                const resp = await axios.get("http://localhost:4000/getrecipe" , {
+                    withCredentials: true
+                })
+                setRecipes(resp.data)
+            }catch(err){
+                console.log(err)
+            }
             
-    //     }
-    //     getRecipe()
-    // },[])
+        }
+        getRecipe()
+    },[])
 
+
+
+
+    useEffect(()=>{
+        
+    },[])
 
     const handleStepCount = () => {
         setForm({
@@ -72,17 +80,22 @@ export default function Recipe() {
     const handleView = (id) => {
         const recipesClone = [...recipes];
         recipesClone.forEach((recipe) => {
-            if (recipe.id === id) {
+            if (recipe._id === id) {
+                console.log("_id", recipe._id)
                 recipe.viewing = !recipe.viewing;
             } else {
                 recipe.viewing = false;
             }
         });
         setRecipes(recipesClone);
+        console.log(recipesClone)
+        console.log("id", id)
     };
 
-
-        
+    // const deleteHandle = (e, value) => {
+    //     e.preventDefault()
+    //     setRecipes(recipes.filter((form.title)) => form.title !== value )
+    // }
 
     
 
@@ -95,27 +108,25 @@ export default function Recipe() {
             alert("Please fill out all fields");
             return;
             }
-        console.log(form)
+      
+            const postRecipe = async () => {
+                try {
+                    const axiosResp = await axios.post(URL, form, {
+                      withCredentials: true,
+                    });
+                    console.log("axiosResp.data:", form);
+                    if (!axiosResp) {
+                      console.debug("axiosResp.data:", axiosResp);
+                    } else {
+                      console.debug("axiosResp.data:", axiosResp);
+                    }
+                  } catch (error) {
+                    console.log("Error while sending with axios", error);
+                  }
+            }
+    
+            postRecipe()
 
-        
-    try {
-        const axiosResp = await axios.post(URL, form, {
-          withCredentials: true,
-        });
-        console.log("axiosResp.data:", form);
-        if (!axiosResp) {
-          console.debug("axiosResp.data:", axiosResp);
-        } else {
-          console.debug("axiosResp.data:", axiosResp);
-        }
-      } catch (error) {
-        console.log("Error while sending with axios", error);
-      }
-
-
-        
- 
-        
         // const fetchData = async () => {
         //     try{
         //         await axios({
@@ -134,21 +145,58 @@ export default function Recipe() {
         // }
 
         // fetchData()
-
-
-                    
+ 
         setForm({
             title: "",
             desc: "",
             ingredients: [],
             steps: [],
             image: "",
+            
+
             });
     }
 
+    
 
+    const deleteRecipe = (id) => {
+        const deletedRec = recipes.filter(recipe => {
+            console.log("recipeIn",recipe)
+            console.log("recipeID", recipe._id)
+            console.log("id", id)
+            console.log("_id", recipe._id)
+            return recipe._id !== id;
+        })
+        setRecipes(deletedRec)
+        console.log("recipesVomDelete", recipes)
+        // recipes.find((recipe) => {
+        //     console.log(recipe[1])
+        //    return setRecipeData(
+        //         recipe.map((recipeIn) => {
+        //            return console.log(recipeIn.id) 
+        //         })
+        //     )
+        // })
 
+        const axiosdeleteRecipe = async () => {
+            try {
+                const axiosDeleteResp = await axios.delete(URL, {data: {_id : id}} ,{
+                  withCredentials: true,
+                });
+                ;
+                if (!axiosDeleteResp) {
+                  console.debug("axiosDeleteResp.data:", axiosDeleteResp);
+                } else {
+                  console.debug("axiosDeleteResp.data:", axiosDeleteResp);
+                }
+              } catch (error) {
+                console.log("Error while sending with axios", error);
+              }
+        }
 
+        axiosdeleteRecipe()
+   
+    }
 
 
 
@@ -163,11 +211,12 @@ export default function Recipe() {
 
             <div className="recipes">
                 {recipes.map((recipe) => (
-                    <div className="recipe" key={recipe.id}>
+                    <div className="recipe" >
                         <h3>{recipe.title}</h3>
                         {recipe.viewing && (
-                            <div>
+                            <div className="recipe"> 
                                 <img className="img" src={recipe.image} alt={recipe.desc} />
+                                <p>{recipe.desc}</p>
                                 <h4>Ingredients</h4>
                                 <ul>
                                     {recipe.ingredients.map((ingredient, i) => (
@@ -183,11 +232,11 @@ export default function Recipe() {
                             </div>
                         )}
                         <div className="buttons">
-                            <button onClick={() => handleView(recipe.id)}>
+                            <button onClick={() => handleView(recipe._id)}>
                                 View {recipe.viewing ? "less" : "more"}
                             </button>
                             <button
-                                onClick={() => { }}
+                                onClick={() => {deleteRecipe(recipe._id)}}
                                 className="remove"
                             >
                                 Remove

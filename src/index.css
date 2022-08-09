@@ -42,6 +42,11 @@ h1 {
   padding: 1rem;
   border-radius: 0.5rem;
   text-align: left;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-items:center;
+  align-items: center;
 }
 
 button {
@@ -148,4 +153,8 @@ input, textarea {
   height: 300px;
   padding: 0.5rem;
   background-size: contain;
+  display: flex;
+  flex-direction: column;
+  justify-items:center;
+  align-items: center;
 }

@@ -5,16 +5,16 @@ export const MainContext = createContext();
 
 
 export const MainContextProvider = (props) => {
-    const [recipes, setRecipes] = useState({});
+    const [recipesData, setRecipesData] = useState({});
 
     useEffect(() => {
       
         const getRecipe = async () => {
           try {
-            const resp = await axios.get("/recipe", {
+            const resp = await axios.get("https://recipe-app-react-farid.netlify.app/getrecipe", {
               withCredentials: true,
             });
-            setRecipes(resp.data);
+            setRecipesData(resp.data);
           } catch (err) {
             console.log(err.message);
           }
@@ -26,8 +26,8 @@ export const MainContextProvider = (props) => {
       return (
         <MainContext.Provider
           value={[
-            recipes,
-            setRecipes,
+            recipesData,
+            setRecipesData,
           ]}
         >
           {props.children}
