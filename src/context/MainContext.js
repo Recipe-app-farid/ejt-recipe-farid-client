@@ -11,7 +11,7 @@ export const MainContextProvider = (props) => {
       
         const getRecipe = async () => {
           try {
-            const resp = await axios.get("https://recipe-app-react-farid.netlify.app/getrecipe", {
+            const resp = await axios.get("https://ejt-recipe-app.herokuapp.com/getrecipe", {
               withCredentials: true,
             });
             setRecipesData(resp.data);

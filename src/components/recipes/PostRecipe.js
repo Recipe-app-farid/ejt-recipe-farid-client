@@ -16,14 +16,14 @@ export default function Recipe() {
     });
 
     // const URL = import.meta.env.VITE_BACKEND_URL || "mongodb://localhost/ejt-recipe-app"
-    const URL = "http://localhost:4000/postrecipe"
+    const URL = "https://ejt-recipe-app.herokuapp.com/postrecipe"
     const [popupActive, setPopupActive] = useState(false);
 
 
     useEffect(()=>{
         const getRecipe = async () => {
             try{
-                const resp = await axios.get("http://localhost:4000/getrecipe" , {
+                const resp = await axios.get("https://ejt-recipe-app.herokuapp.com/getrecipe" , {
                     withCredentials: true
                 })
                 setRecipes(resp.data)
