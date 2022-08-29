@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { MainContext } from "../../context/MainContext";
 import axios from "axios";
 import {v4 as uuidv4} from "uuid"
+import {images} from "../../constants"
 
 export default function Recipe() {
     const [recipeData, setRecipeData] = useContext(MainContext)
@@ -92,12 +93,7 @@ export default function Recipe() {
         console.log("id", id)
     };
 
-    // const deleteHandle = (e, value) => {
-    //     e.preventDefault()
-    //     setRecipes(recipes.filter((form.title)) => form.title !== value )
-    // }
 
-    
 
 
 
@@ -127,25 +123,6 @@ export default function Recipe() {
     
             postRecipe()
 
-        // const fetchData = async () => {
-        //     try{
-        //         await axios({
-        //             method: 'post',
-        //             url: URL,
-        //             data: {
-        //                 title: form.title,
-        //                 decs: form.desc,
-        //                 ingredient: form.ingredients,
-        //                 steps: form.steps
-        //             },
-        //         })
-        //     }catch(err){
-        //         console.log(err)
-        //     }
-        // }
-
-        // fetchData()
- 
         setForm({
             title: "",
             desc: "",
@@ -161,22 +138,12 @@ export default function Recipe() {
 
     const deleteRecipe = (id) => {
         const deletedRec = recipes.filter(recipe => {
-            console.log("recipeIn",recipe)
-            console.log("recipeID", recipe._id)
-            console.log("id", id)
-            console.log("_id", recipe._id)
+            
             return recipe._id !== id;
         })
         setRecipes(deletedRec)
         console.log("recipesVomDelete", recipes)
-        // recipes.find((recipe) => {
-        //     console.log(recipe[1])
-        //    return setRecipeData(
-        //         recipe.map((recipeIn) => {
-        //            return console.log(recipeIn.id) 
-        //         })
-        //     )
-        // })
+        
 
         const axiosdeleteRecipe = async () => {
             try {
@@ -206,6 +173,9 @@ export default function Recipe() {
     return (
 
         <>
+            <img className="bg-Home" src={images.bgImage} alt="" />
+
+
             <h1>My recipes</h1>
             <button onClick={() => setPopupActive(!popupActive)}>Add recipe</button>
 
