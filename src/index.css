@@ -1,6 +1,6 @@
 :root {
   --light: rgb(255, 255, 255);
-  --dark: #1c1541;
+  --dark: #000000;
   --darker: #000002;
   --blue: #ffffff;
   --crimson: #DB3052;
@@ -38,7 +38,7 @@ h1 {
 }
 
 .recipe {
-  background-color: var(--dark);
+  background-color:rgba(35, 35, 35, 0.055);
   padding: 1rem;
   border-radius: 0.5rem;
   text-align: left;
@@ -161,6 +161,7 @@ input, textarea {
   flex-direction: column;
   justify-items:center;
   align-items: center;
+  border-radius: 5px;
 }
 
 .bg-Home {
